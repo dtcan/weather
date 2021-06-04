@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadForecast() {
+        ImageView image = findViewById(R.id.image);
         TextView tvDate = findViewById(R.id.date);
         TextView tvName = findViewById(R.id.name);
         TextView tvTemp = findViewById(R.id.temp);
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(CompleteForecast response) {
                 Forecast current = response.current;
+                image.setImageDrawable(getDrawable(current.getDrawable()));
                 tvDate.setText(format(Locale.getDefault(), "%1$tA, %1$tb %1$td", current.date));
                 tvName.setText(city.name);
                 tvTemp.setText(format(Locale.getDefault(), "%.1f °C", current.getTempCelsius()));

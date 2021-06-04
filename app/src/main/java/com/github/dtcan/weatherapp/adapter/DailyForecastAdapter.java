@@ -1,5 +1,6 @@
 package com.github.dtcan.weatherapp.adapter;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,16 +47,22 @@ public class DailyForecastAdapter extends RecyclerView.Adapter<DailyForecastAdap
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView tvDate, tvTemp, tvWeather;
+        private final View itemView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.tvDate = itemView.findViewById(R.id.daily_date);
-            this.tvTemp = itemView.findViewById(R.id.daily_temp);
-            this.tvWeather = itemView.findViewById(R.id.daily_weather);
+            this.itemView = itemView;
         }
 
         public void bindView(Forecast forecastDay) {
+            Context context = itemView.getContext();
+
+            ImageView image = itemView.findViewById(R.id.daily_image);
+            TextView tvDate = itemView.findViewById(R.id.daily_date);
+            TextView tvTemp = itemView.findViewById(R.id.daily_temp);
+            TextView tvWeather = itemView.findViewById(R.id.daily_weather);
+
+            image.setImageDrawable(context.getDrawable(forecastDay.getDrawable()));
             tvDate.setText(format(Locale.getDefault(), "%1$tA, %1$tb %1$td", forecastDay.date));
             tvTemp.setText(format(Locale.getDefault(), "%.1f °C", forecastDay.getTempCelsius()));
             tvWeather.setText(format(Locale.getDefault(), "%s, %s", forecastDay.weather.toString(), forecastDay.description));

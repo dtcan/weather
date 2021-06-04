@@ -1,5 +1,6 @@
 package com.github.dtcan.weatherapp.api;
 
+import com.github.dtcan.weatherapp.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,12 +13,14 @@ public class Forecast {
     private final double tempCelsius;
     public final Weather weather;
     public final String description;
+    private final Icon icon;
 
-    private Forecast(Calendar date, double tempCelsius, Weather weather, String description) {
+    private Forecast(Calendar date, double tempCelsius, Weather weather, String description, Icon icon) {
         this.date = date;
         this.tempCelsius = tempCelsius;
         this.weather = weather;
         this.description = description;
+        this.icon = icon;
     }
 
     public static Forecast currentFromJSON(JSONObject forecastJSON) throws JSONException {
@@ -40,8 +43,43 @@ public class Forecast {
         JSONObject weatherJSON = weatherJSONArray.getJSONObject(0);
         Weather weather = Forecast.weatherFromJSON(weatherJSON);
         String description = weatherJSON.getString("description");
+        String iconText = weatherJSON.getString("icon");
+        Icon icon;
+        switch(iconText) {
+            case "01n":
+            case "01d":
+                icon = Icon.Clear;
+                break;
+            case "02d":
+            case "02n":
+                icon = Icon.Cloudy;
+                break;
+            case "09d":
+            case "09n":
+                icon = Icon.Rain;
+                break;
+            case "10d":
+            case "10n":
+                icon = Icon.Rainy;
+                break;
+            case "11d":
+            case "11n":
+                icon = Icon.Lightning;
+                break;
+            case "13d":
+            case "13n":
+                icon = Icon.Snow;
+                break;
+            case "50d":
+            case "50n":
+                icon = Icon.Mist;
+                break;
+            default:
+                icon = Icon.Cloud;
+                break;
+        }
 
-        return new Forecast(date, tempCelsius, weather, description);
+        return new Forecast(date, tempCelsius, weather, description, icon);
     }
 
     private static Weather weatherFromJSON(JSONObject weatherJSON) throws JSONException {
@@ -89,5 +127,26 @@ public class Forecast {
 
     public double getTempFahrenheit() {
         return (tempCelsius * 1.8) + 32;
+    }
+
+    public int getDrawable() {
+        switch(icon) {
+            case Clear:
+                return R.drawable.ic_sun;
+            case Cloudy:
+                return R.drawable.ic_cloudy;
+            case Rain:
+                return R.drawable.ic_rain;
+            case Rainy:
+                return R.drawable.ic_rainy;
+            case Lightning:
+                return R.drawable.ic_lightning;
+            case Snow:
+                return R.drawable.ic_snow;
+            case Mist:
+                return R.drawable.ic_mist;
+            default:
+                return R.drawable.ic_cloud;
+        }
     }
 }
