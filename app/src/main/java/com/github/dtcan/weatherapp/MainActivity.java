@@ -29,6 +29,24 @@ public class MainActivity extends AppCompatActivity {
         loadForecast();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.item_reload) {
+            loadForecast();
+            return true;
+        }else if(item.getItemId() == R.id.item_city) {
+            // TODO: Change city
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void loadForecast() {
         TextView tvName = findViewById(R.id.name);
         TextView tvTemp = findViewById(R.id.temp);

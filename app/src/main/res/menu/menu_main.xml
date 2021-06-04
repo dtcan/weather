@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/reload" android:id="@+id/item_reload"/>
+    <item android:title="@string/choose_city" android:id="@+id/item_city"/>
+</menu>
