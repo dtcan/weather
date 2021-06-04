@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         }else {
             image.setImageDrawable(getDrawable(R.drawable.ic_cloud));
             tvDate.setText("");
-            tvTemp.setText(format(Locale.getDefault(), "%.1f °F", currentForecast.getTempFahrenheit()));
+            tvTemp.setText("");
             tvWeather.setText(getString(R.string.error));
         }
     }
