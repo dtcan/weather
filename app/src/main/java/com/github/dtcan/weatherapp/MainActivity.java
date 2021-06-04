@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadForecast() {
+        TextView tvDate = findViewById(R.id.date);
         TextView tvName = findViewById(R.id.name);
         TextView tvTemp = findViewById(R.id.temp);
         TextView tvWeather = findViewById(R.id.weather);
@@ -73,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(CompleteForecast response) {
                 Forecast current = response.current;
+                tvDate.setText(format(Locale.getDefault(), "%1$tA, %1$tb %1$td", current.date));
                 tvName.setText(city.name);
-                tvTemp.setText(format(Locale.getDefault(), "%.1f deg C", current.getTempCelsius()));
+                tvTemp.setText(format(Locale.getDefault(), "%.1f °C", current.getTempCelsius()));
                 tvWeather.setText(format(Locale.getDefault(), "%s, %s", current.weather.toString(), current.description));
                 listDaily.setAdapter(new DailyForecastAdapter(response.daily));
             }

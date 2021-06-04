@@ -4,8 +4,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.github.dtcan.weatherapp.R;
 import com.github.dtcan.weatherapp.api.Forecast;
@@ -54,11 +56,9 @@ public class DailyForecastAdapter extends RecyclerView.Adapter<DailyForecastAdap
         }
 
         public void bindView(Forecast forecastDay) {
-            this.tvDate.setText(forecastDay.date.getDisplayName(
-                    Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()
-            ));
-            this.tvTemp.setText(format(Locale.getDefault(), "%.1f deg C", forecastDay.getTempCelsius()));
-            this.tvWeather.setText(format(Locale.getDefault(), "%s, %s", forecastDay.weather.toString(), forecastDay.description));
+            tvDate.setText(format(Locale.getDefault(), "%1$tA, %1$tb %1$td", forecastDay.date));
+            tvTemp.setText(format(Locale.getDefault(), "%.1f °C", forecastDay.getTempCelsius()));
+            tvWeather.setText(format(Locale.getDefault(), "%s, %s", forecastDay.weather.toString(), forecastDay.description));
         }
 
     }
