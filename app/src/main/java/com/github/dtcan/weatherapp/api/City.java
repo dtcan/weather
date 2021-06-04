@@ -16,14 +16,10 @@ public class City {
 
     public static City fromJSON(JSONObject cityJSON) throws JSONException {
         String name = cityJSON.getString("name");
+        String state = cityJSON.optString("state");
         String country = cityJSON.getString("country");
         double lat = cityJSON.getDouble("lat");
         double lon = cityJSON.getDouble("lon");
-
-        String state = "";
-        try {
-            state = cityJSON.getString("state");
-        }catch(JSONException ignored) {} // If excepted, then state = ""
 
         if(state.length() > 0) {
             name += ", " + state;
