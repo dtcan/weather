@@ -17,9 +17,8 @@ public class City {
     public static City fromJSON(JSONObject cityJSON) throws JSONException {
         String name = cityJSON.getString("name");
         String country = cityJSON.getString("country");
-        JSONObject coordJSON = cityJSON.getJSONObject("coord");
-        double lat = coordJSON.getDouble("lat");
-        double lon = coordJSON.getDouble("lon");
+        double lat = cityJSON.getDouble("lat");
+        double lon = cityJSON.getDouble("lon");
 
         String state = "";
         try {
