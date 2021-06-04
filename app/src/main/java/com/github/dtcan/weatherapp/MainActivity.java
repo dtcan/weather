@@ -22,6 +22,9 @@ import static java.lang.String.format;
 
 public class MainActivity extends AppCompatActivity {
 
+    private boolean useFahrenheit = false;
+    private Forecast currentForecast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView listDaily = findViewById(R.id.list_daily);
         listDaily.setLayoutManager(new LinearLayoutManager(this));
-        listDaily.setAdapter(new DailyForecastAdapter(new Forecast[0]));
+        listDaily.setAdapter(new DailyForecastAdapter(new Forecast[0], useFahrenheit));
     }
 
     @Override
@@ -53,16 +56,20 @@ public class MainActivity extends AppCompatActivity {
             Intent searchIntent = new Intent(this, SearchActivity.class);
             startActivity(searchIntent);
             return true;
+        }else if(item.getItemId() == R.id.item_temp) {
+            useFahrenheit = !useFahrenheit;
+            RecyclerView listDaily = findViewById(R.id.list_daily);
+            DailyForecastAdapter listAdapter = (DailyForecastAdapter) listDaily.getAdapter();
+            if(listAdapter != null) {
+                listAdapter.useFahrenheit(useFahrenheit);
+            }
+            updateForecastView();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void loadForecast() {
-        ImageView image = findViewById(R.id.image);
-        TextView tvDate = findViewById(R.id.date);
-        TextView tvName = findViewById(R.id.name);
-        TextView tvTemp = findViewById(R.id.temp);
-        TextView tvWeather = findViewById(R.id.weather);
         RecyclerView listDaily = findViewById(R.id.list_daily);
 
         SharedPreferences preferences = getSharedPreferences(getString(R.string.preferences_key), MODE_PRIVATE);
@@ -75,22 +82,46 @@ public class MainActivity extends AppCompatActivity {
         api.getCompleteForecast(city, new ResponseHandler<CompleteForecast>() {
             @Override
             public void onResponse(CompleteForecast response) {
-                Forecast current = response.current;
-                image.setImageDrawable(getDrawable(current.getDrawable()));
-                tvDate.setText(format(Locale.getDefault(), "%1$tA, %1$tb %1$td", current.date));
-                tvName.setText(city.name);
-                tvTemp.setText(format(Locale.getDefault(), "%.1f °C", current.getTempCelsius()));
-                tvWeather.setText(format(Locale.getDefault(), "%s, %s", current.weather.toString(), current.description));
-                listDaily.setAdapter(new DailyForecastAdapter(response.daily));
+                currentForecast = response.current;
+                updateForecastView();
+                listDaily.setAdapter(new DailyForecastAdapter(response.daily, useFahrenheit));
             }
 
             @Override
             public void onError(int statusCode, String error) {
-                tvName.setText(format(Locale.getDefault(), "%d", statusCode));
-                tvTemp.setText(error);
-                tvWeather.setText("");
-                listDaily.setAdapter(new DailyForecastAdapter(new Forecast[0]));
+                currentForecast = null;
+                updateForecastView();
+                listDaily.setAdapter(new DailyForecastAdapter(new Forecast[0], useFahrenheit));
             }
         });
+    }
+
+    private void updateForecastView() {
+        ImageView image = findViewById(R.id.image);
+        TextView tvDate = findViewById(R.id.date);
+        TextView tvName = findViewById(R.id.name);
+        TextView tvTemp = findViewById(R.id.temp);
+        TextView tvWeather = findViewById(R.id.weather);
+
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.preferences_key), MODE_PRIVATE);
+        String name = preferences.getString(getString(R.string.preferences_name), "Toronto, CA");
+        tvName.setText(name);
+
+        if(currentForecast != null) {
+            image.setImageDrawable(getDrawable(currentForecast.getDrawable()));
+            tvDate.setText(format(Locale.getDefault(), "%1$tA, %1$tb %1$td", currentForecast.date));
+            tvWeather.setText(format(Locale.getDefault(), "%s, %s", currentForecast.weather.toString(), currentForecast.description));
+
+            if(useFahrenheit) {
+                tvTemp.setText(format(Locale.getDefault(), "%.1f °F", currentForecast.getTempFahrenheit()));
+            } else {
+                tvTemp.setText(format(Locale.getDefault(), "%.1f °C", currentForecast.getTempCelsius()));
+            }
+        }else {
+            image.setImageDrawable(getDrawable(R.drawable.ic_cloud));
+            tvDate.setText("");
+            tvTemp.setText(format(Locale.getDefault(), "%.1f °F", currentForecast.getTempFahrenheit()));
+            tvWeather.setText(getString(R.string.error));
+        }
     }
 }

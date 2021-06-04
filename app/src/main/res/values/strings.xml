@@ -7,4 +7,6 @@
     <string name="preferences_lon">CITY_LON</string>
     <string name="preferences_lat">CITY_LAT</string>
     <string name="credit">Icons by Freepik</string>
+    <string name="error">An error occurred</string>
+    <string name="switch_temp">Switch Temperature Scale</string>
 </resources>

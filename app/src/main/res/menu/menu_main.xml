@@ -5,4 +5,5 @@
           app:showAsAction="always"/>
     <item android:title="@string/choose_city" android:id="@+id/item_city" android:icon="@drawable/ic_city"
           app:showAsAction="ifRoom"/>
+    <item android:title="@string/switch_temp" android:id="@+id/item_temp" app:showAsAction="never"/>
 </menu>

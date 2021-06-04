@@ -21,9 +21,16 @@ import static java.lang.String.format;
 public class DailyForecastAdapter extends RecyclerView.Adapter<DailyForecastAdapter.ViewHolder> {
 
     private final Forecast[] daily;
+    private boolean useFahrenheit = false;
 
-    public DailyForecastAdapter(Forecast[] daily) {
+    public DailyForecastAdapter(Forecast[] daily, boolean useFahrenheit) {
         this.daily = daily;
+        this.useFahrenheit = useFahrenheit;
+    }
+
+    public void useFahrenheit(boolean flag) {
+        useFahrenheit = flag;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -36,7 +43,7 @@ public class DailyForecastAdapter extends RecyclerView.Adapter<DailyForecastAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Forecast forecastDay = daily[position];
-        holder.bindView(forecastDay);
+        holder.bindView(forecastDay, useFahrenheit);
     }
 
     @Override
@@ -54,7 +61,7 @@ public class DailyForecastAdapter extends RecyclerView.Adapter<DailyForecastAdap
             this.itemView = itemView;
         }
 
-        public void bindView(Forecast forecastDay) {
+        public void bindView(Forecast forecastDay, boolean useFahrenheit) {
             Context context = itemView.getContext();
 
             ImageView image = itemView.findViewById(R.id.daily_image);
@@ -64,8 +71,13 @@ public class DailyForecastAdapter extends RecyclerView.Adapter<DailyForecastAdap
 
             image.setImageDrawable(context.getDrawable(forecastDay.getDrawable()));
             tvDate.setText(format(Locale.getDefault(), "%1$tA, %1$tb %1$td", forecastDay.date));
-            tvTemp.setText(format(Locale.getDefault(), "%.1f °C", forecastDay.getTempCelsius()));
             tvWeather.setText(format(Locale.getDefault(), "%s, %s", forecastDay.weather.toString(), forecastDay.description));
+
+            if(useFahrenheit) {
+                tvTemp.setText(format(Locale.getDefault(), "%.1f °F", forecastDay.getTempFahrenheit()));
+            }else {
+                tvTemp.setText(format(Locale.getDefault(), "%.1f °C", forecastDay.getTempCelsius()));
+            }
         }
 
     }
