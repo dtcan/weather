@@ -4,13 +4,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+
 public class Forecast {
 
+    public final Calendar date;
     private final double tempCelsius;
     public final Weather weather;
     public final String description;
 
-    private Forecast(double tempCelsius, Weather weather, String description) {
+    private Forecast(Calendar date, double tempCelsius, Weather weather, String description) {
+        this.date = date;
         this.tempCelsius = tempCelsius;
         this.weather = weather;
         this.description = description;
@@ -18,25 +22,26 @@ public class Forecast {
 
     public static Forecast currentFromJSON(JSONObject forecastJSON) throws JSONException {
         double tempCelsius = forecastJSON.getDouble("temp");
-
-        JSONArray weatherJSONArray = forecastJSON.getJSONArray("weather");
-        JSONObject weatherJSON = weatherJSONArray.getJSONObject(0);
-        Weather weather = Forecast.weatherFromJSON(weatherJSON);
-        String description = weatherJSON.getString("description");
-
-        return new Forecast(tempCelsius, weather, description);
+        return Forecast.fromJSONAndTemp(forecastJSON, tempCelsius);
     }
 
     public static Forecast dailyFromJSON(JSONObject forecastJSON) throws JSONException {
         JSONObject temps = forecastJSON.getJSONObject("temp");
         double tempCelsius = temps.getDouble("day");
+        return Forecast.fromJSONAndTemp(forecastJSON, tempCelsius);
+    }
+
+    private static Forecast fromJSONAndTemp(JSONObject forecastJSON, double tempCelsius) throws JSONException {
+        long unixSeconds = forecastJSON.getLong("dt");
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(unixSeconds * 1000);
 
         JSONArray weatherJSONArray = forecastJSON.getJSONArray("weather");
         JSONObject weatherJSON = weatherJSONArray.getJSONObject(0);
         Weather weather = Forecast.weatherFromJSON(weatherJSON);
         String description = weatherJSON.getString("description");
 
-        return new Forecast(tempCelsius, weather, description);
+        return new Forecast(date, tempCelsius, weather, description);
     }
 
     private static Weather weatherFromJSON(JSONObject weatherJSON) throws JSONException {
@@ -73,8 +78,9 @@ public class Forecast {
                 return Weather.Squall;
             case "Tornado":
                 return Weather.Tornado;
+            default:
+                return Weather.Unknown;
         }
-        return Weather.Unknown;
     }
 
     public double getTempCelsius() {
