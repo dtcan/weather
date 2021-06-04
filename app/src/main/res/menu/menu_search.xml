@@ -3,7 +3,7 @@
     <item
         android:id="@+id/search"
         android:title="@string/choose_city"
-        android:icon="@drawable/ic_temp"
+        android:icon="@drawable/ic_search"
         app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView" />
 </menu>
