@@ -16,6 +16,7 @@ import org.json.JSONArray;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -53,12 +54,13 @@ public class API {
                 CompleteForecast forecast = CompleteForecast.fromJSON(responseJSON);
                 handler.onResponse(forecast);
             }catch(JSONException e) {
-                Log.e("API", e.toString());
-                handler.onError(e.getMessage());
+                Log.e("API", e.getMessage());
+                handler.onError(200, e.getMessage());
             }
         }, e -> {
-            Log.e("API", e.toString());
-            handler.onError(e.getMessage());
+            String message = API.getErrorMessage(e);
+            Log.e("API", message);
+            handler.onError(e.networkResponse.statusCode, message);
         });
 
         requestQueue.add(request);
@@ -77,16 +79,26 @@ public class API {
                     response.add(city);
                 } catch (JSONException e) {
                     Log.e("API", e.toString());
-                    handler.onError(e.getMessage());
+                    handler.onError(200, e.getMessage());
                 }
             }
             handler.onResponse(response);
         }, e -> {
-            Log.e("API", e.toString());
-            handler.onError(e.getMessage());
+            String message = API.getErrorMessage(e);
+            Log.e("API", message);
+            handler.onError(e.networkResponse.statusCode, message);
         });
 
         requestQueue.add(request);
+    }
+
+    private static String getErrorMessage(VolleyError error) {
+        String responseString = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+        JSONObject responseJSON = new JSONObject();
+        try {
+            responseJSON = new JSONObject(responseString);
+        }catch(JSONException ignored) {} // We know that error.networkResponse.data is JSON
+        return responseJSON.optString("message");
     }
 
 }
