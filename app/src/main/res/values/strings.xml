@@ -2,4 +2,8 @@
     <string name="app_name">Weather App</string>
     <string name="reload">Reload</string>
     <string name="choose_city">Choose City</string>
+    <string name="preferences_key">PREFERENCES</string>
+    <string name="preferences_name">CITY_NAME</string>
+    <string name="preferences_lon">CITY_LON</string>
+    <string name="preferences_lat">CITY_LAT</string>
 </resources>

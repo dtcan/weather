@@ -1,6 +1,8 @@
 package com.github.dtcan.weatherapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -27,7 +29,11 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView listDaily = findViewById(R.id.list_daily);
         listDaily.setLayoutManager(new LinearLayoutManager(this));
         listDaily.setAdapter(new DailyForecastAdapter(new Forecast[0]));
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadForecast();
     }
 
@@ -56,8 +62,11 @@ public class MainActivity extends AppCompatActivity {
         TextView tvWeather = findViewById(R.id.weather);
         RecyclerView listDaily = findViewById(R.id.list_daily);
 
-        // TODO: Load city from preferences
-        City city = new City("Toronto, CA", 43.7001f, -79.4163f);
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.preferences_key), MODE_PRIVATE);
+        String name = preferences.getString(getString(R.string.preferences_name), "Toronto, CA");
+        float lat = preferences.getFloat(getString(R.string.preferences_lat), -79.4163f);
+        float lon = preferences.getFloat(getString(R.string.preferences_lon), 43.7001f);
+        City city = new City(name, lat, lon);
 
         API api = API.getInstance(this);
         api.getCompleteForecast(city, new ResponseHandler<CompleteForecast>() {
