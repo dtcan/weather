@@ -1,7 +1,9 @@
 package com.github.dtcan.weatherapp;
 
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
             loadForecast();
             return true;
         }else if(item.getItemId() == R.id.item_city) {
-            // TODO: Change city
+            Intent searchIntent = new Intent(this, SearchActivity.class);
+            startActivity(searchIntent);
             return true;
         }
         return super.onOptionsItemSelected(item);
