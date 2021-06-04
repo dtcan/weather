@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView listDaily = findViewById(R.id.list_daily);
 
         // TODO: Load city from preferences
-        City city = new City("Toronto, CA", 43.7001, -79.4163);
+        City city = new City("Toronto, CA", 43.7001f, -79.4163f);
 
         API api = API.getInstance(this);
         api.getCompleteForecast(city, new ResponseHandler<CompleteForecast>() {
