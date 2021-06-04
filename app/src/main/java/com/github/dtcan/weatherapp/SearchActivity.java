@@ -77,6 +77,10 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void loadResults(String query) {
+        if(query.length() <= 0) {
+            return;
+        }
+
         RecyclerView listCities = findViewById(R.id.list_cities);
         CityListAdapter listAdapter = (CityListAdapter) listCities.getAdapter();
         if(listAdapter == null) {
